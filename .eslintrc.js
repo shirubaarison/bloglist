@@ -23,10 +23,7 @@ module.exports = {
 		'ecmaVersion': 'latest'
 	},
 	'rules': {
-		'indent': [
-			'error',
-			'tab'
-		],
+		'indent': 0,
 		'linebreak-style': [
 			'error',
 			'unix'
