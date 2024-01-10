@@ -96,3 +96,16 @@ describe('favorite', () => {
     expect(result).toEqual(favorite)
   })
 })
+
+
+describe('most blogs', () => {
+  const shiningFinger = {
+    author: 'Robert C. Martin',
+    blogs: 3
+  }
+
+  test('return who writes more blogs', () => {
+    const result = listHelper.mostBlogs(blogs)
+    expect(result).toEqual(shiningFinger)
+  })
+})
