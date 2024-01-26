@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const helper = require('./test_helper')
 
 const api = supertest(app)
 
@@ -114,6 +115,22 @@ test('doesnt create blog missing url', async () => {
     .post('/api/blogs')
     .send(newBlog)
     .expect(400)
+})
+
+test('can delete a blog', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1)
+
+    const contents = blogsAtEnd.map(b => b.title)
+    expect(contents).not.toContain(blogToDelete.title)
 })
 
 afterAll(async () => {
