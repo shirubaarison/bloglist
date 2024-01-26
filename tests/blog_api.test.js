@@ -92,6 +92,30 @@ test('creates a blog without likes', async () => {
     expect(createdBlog.likes).toBe(0)
 })
 
+test('doesnt create blog missing title', async () => {
+    const newBlog = {
+        author: 'your mother',
+        url: '.com',
+    }
+
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('doesnt create blog missing url', async () => {
+    const newBlog = {
+        title: 'yes',
+        author: 'yues',
+    }
+
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 afterAll(async () => {
     await mongoose.connection.close()
 })
