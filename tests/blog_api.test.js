@@ -6,25 +6,10 @@ const helper = require('./test_helper')
 
 const api = supertest(app)
 
-const initialBlogs = [
-    {
-        title: 'testing',
-        author: 'shirubaarison',
-        url: 'idk',
-        likes: 0
-    },
-    {
-        title: 'testing2',
-        author: 'shirubaarison',
-        url: 'idk2',
-        likes: 0
-    }
-]
-
 beforeEach(async () => {
     await Blog.deleteMany({})
 
-    const blogObjects = initialBlogs.map(b => new Blog(b))
+    const blogObjects = helper.initialBlogs.map(b => new Blog(b))
     const promiseArray = blogObjects.map(b => b.save())
 
     await Promise.all(promiseArray)
@@ -36,7 +21,7 @@ test('returns blogs as json', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-    expect(response.body).toHaveLength(initialBlogs.length)
+    expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
 test('id is the unique identifier property', async () => {
@@ -66,7 +51,7 @@ test('creates a valid new blog', async () => {
     const response = await api.get('/api/blogs')
     const contents = response.body.map(b => b.title)
 
-    expect(response.body).toHaveLength(initialBlogs.length + 1)
+    expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
     expect(contents).toContain('what is obamas last name')
 })
 
@@ -86,7 +71,7 @@ test('creates a blog without likes', async () => {
     const response = await api.get('/api/blogs')
     const contents = response.body.map(b => b.title)
 
-    expect(response.body).toHaveLength(initialBlogs.length + 1)
+    expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
     expect(contents).toContain('gta iv leaks')
 
     const createdBlog = response.body.find(b => b.title === 'gta iv leaks')
@@ -127,11 +112,19 @@ test('can delete a blog', async () => {
 
     const blogsAtEnd = await helper.blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(initialBlogs.length - 1)
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
 
     const contents = blogsAtEnd.map(b => b.title)
     expect(contents).not.toContain(blogToDelete.title)
 })
+
+test('cannot delete an invalid blog', async () => {
+    const idToDelete = new mongoose.Types.ObjectId()
+    await api
+        .delete(`/api/blogs/${idToDelete}`)
+        .expect(404)
+})
+
 
 afterAll(async () => {
     await mongoose.connection.close()
