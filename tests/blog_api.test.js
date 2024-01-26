@@ -48,6 +48,27 @@ test('id is the unique identifier property', async () => {
     })
 })
 
+test('creates a valid new blog', async () => {
+    const newBlog = {
+        title: 'what is obamas last name',
+        author: 'barack obama',
+        url: 'whitehouse.com',
+        likes: 1913981389
+    }
+
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    const contents = response.body.map(b => b.title)
+
+    expect(response.body).toHaveLength(initialBlogs.length + 1)
+    expect(contents).toContain('what is obamas last name')
+})
+
 afterAll(async () => {
     await mongoose.connection.close()
 })
