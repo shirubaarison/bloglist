@@ -69,6 +69,29 @@ test('creates a valid new blog', async () => {
     expect(contents).toContain('what is obamas last name')
 })
 
+test('creates a blog without likes', async () => {
+    const newBlog = {
+        title: 'gta iv leaks',
+        author: 'anonymous',
+        url: '.com',
+    }
+
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    const contents = response.body.map(b => b.title)
+
+    expect(response.body).toHaveLength(initialBlogs.length + 1)
+    expect(contents).toContain('gta iv leaks')
+
+    const createdBlog = response.body.find(b => b.title === 'gta iv leaks')
+    expect(createdBlog.likes).toBe(0)
+})
+
 afterAll(async () => {
     await mongoose.connection.close()
 })
