@@ -2,7 +2,7 @@ POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-    "username": "milei",
-    "name": "jair milei trump da silva",
-    "password": "rsrs123"
+    "username": "rildian",
+    "name": "rildian",
+    "password": "1234"
 }
