@@ -219,6 +219,15 @@ describe('when there is one user on the database', () => {
         await user.save()
     })
 
+    test('return users as json', async () => {
+        const response = await api
+        .get('/api/users')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+        expect(response.body).toHaveLength(1)
+    })
+
     test('creates user with valid data', async () => {
         const usersAtStart = await helper.usersInDb()
 

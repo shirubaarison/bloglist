@@ -2,8 +2,9 @@ POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
-    "title": "testing2",
+    "title": "ola",
     "author": "shirubaarison",
-    "url": "idk2",
-    "likes": 0
+    "url": "dkakd.com",
+    "likes": 0,
+    "userId": "65b572795cf54d776276a7ee"
 }
