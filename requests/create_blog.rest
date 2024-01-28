@@ -1,5 +1,6 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1pbGVpIiwiaWQiOiI2NWI2NThiOTk2ZDdkY2Y4OTg5ZWFmNDIiLCJpYXQiOjE3MDY0NTA4NjN9.k4xJUodtkTHZG3o0N2a5mrpuekXvcC1BVCPmc99kvqM
 
 {
     "title": "ola",
