@@ -219,9 +219,36 @@ describe('deletion of a blog', () => {
 })
 
 describe('update of a blog', () => {
+    let updateID = 0
+    beforeAll(async () => {
+        const userTest = {
+            username: 'root',
+            password: 'secret'
+        }
+
+        const response = await api
+            .post('/api/login')
+            .send(userTest)
+
+        token = response.body.token
+    })
+
     test('succeeds updating a blog with valid data', async () => {
-        const blogsAtStart = await helper.blogsInDb()
-        const blogToUpdate = blogsAtStart[0]
+        const newBlog = {
+            title: 'gta vi leaks',
+            author: 'anonymous',
+            url: '.com',
+        }
+
+        const res = await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .set('Authorization', `Bearer ${token}`)
+
+        updateID = res.body.id
+
+        const blogsAtStart = await Blog.find({})
+        const blogToUpdate = await Blog.findById(updateID)
 
         const upBlog = {
             title: 'lol',
@@ -233,44 +260,18 @@ describe('update of a blog', () => {
         await api
             .put(`/api/blogs/${blogToUpdate.id}`)
             .send(upBlog)
+            .set('Authorization', `Bearer ${token}`)
             .expect(200)
             .expect('Content-Type', /application\/json/)
 
         const response = await api.get('/api/blogs')
         const contents = response.body.map(b => b.title)
 
-        expect(response.body).toHaveLength(helper.initialBlogs.length)
+        expect(response.body).toHaveLength(blogsAtStart.length)
         expect(contents).toContain(upBlog.title)
 
         const updatedBlog = response.body.find(b => b.title === upBlog.title)
         expect(updatedBlog.likes).toBe(23)
-    })
-
-    test('succeeds updating a blog with just id', async () => {
-        const blogsAtStart = await helper.blogsInDb()
-        const blogToUpdate = blogsAtStart[0]
-
-        const upBlog = {
-            title: blogToUpdate.title,
-            author: blogToUpdate.author,
-            url: blogToUpdate.url,
-            likes: 69
-        }
-
-        await api
-            .put(`/api/blogs/${blogToUpdate.id}`)
-            .send(upBlog)
-            .expect(200)
-            .expect('Content-Type', /application\/json/)
-
-        const response = await api.get('/api/blogs')
-        const contents = response.body.map(b => b.title)
-
-        expect(response.body).toHaveLength(helper.initialBlogs.length)
-        expect(contents).toContain(upBlog.title)
-
-        const updatedBlog = response.body.find(b => b.title === upBlog.title)
-        expect(updatedBlog.likes).toBe(69)
     })
 
     test('fails with status code 404 if id doesnt exist', async () => {
@@ -285,7 +286,37 @@ describe('update of a blog', () => {
         await api
             .put(`/api/blogs/${idToDelete}`)
             .send(upBlog)
+            .set('Authorization', `Bearer ${token}`)
             .expect(404)
+    })
+
+    test('fails updating a blog without token', async () => {
+        const newBlog = {
+            title: 'gta vi leaks',
+            author: 'anonymous',
+            url: '.com',
+        }
+
+        const res = await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .set('Authorization', `Bearer ${token}`)
+
+        updateID = res.body.id
+
+        const blogToUpdate = await Blog.findById(updateID)
+
+        const upBlog = {
+            title: 'lol',
+            author: 'mario',
+            url: 'n.com',
+            likes: 23
+        }
+
+        await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(upBlog)
+            .expect(401)
     })
 })
 

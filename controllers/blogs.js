@@ -66,6 +66,17 @@ blogsRouter.put('/:id', async (request, response) => {
 		return response.status(404).end()
 	}
 
+	const decodedToken = jwt.verify(request.token, process.env.SECRET)
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: 'token invalid' })
+	}
+
+	const user = request.user
+
+	if (findBlog.user.toString() !== user.id) {
+		return response.status(400).end()
+	}
+
 	const blog = {
 		title: body.title,
 		author: body.author,
