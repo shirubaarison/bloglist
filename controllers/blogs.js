@@ -22,7 +22,6 @@ blogsRouter.post('/', async (request, response) => {
 
 	const user = request.user
 
-	console.log('the user is ', user)
 	const blog = new Blog({
 		title: body.title,
 		author: body.author,
@@ -55,7 +54,6 @@ blogsRouter.delete('/:id', async (request, response) => {
 		return response.status(400).end()
 	}
 
-	console.log('it is the author')
 	await Blog.findByIdAndDelete(request.params.id)
 	return response.status(204).end()
 })
