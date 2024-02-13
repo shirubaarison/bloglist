@@ -71,17 +71,19 @@ blogsRouter.put('/:id', async (request, response) => {
 		return response.status(401).json({ error: 'token invalid' })
 	}
 
-	const user = request.user
+	// have to disable this for the like function
+	// but i guess it is right to do this if we're trying to update a blog not just liking it
+	// const user = request.user
 
-	if (findBlog.user.toString() !== user.id) {
-		return response.status(400).end()
-	}
+	// if (findBlog.user.toString() !== user.id) {
+	// 	return response.status(400).end()
+	// }
 
 	const blog = {
 		title: body.title,
 		author: body.author,
 		url: body.url,
-		likes: body.likes || 0
+		likes: body.likes
 	}
 
 	const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
