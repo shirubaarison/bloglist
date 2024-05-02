@@ -73,14 +73,6 @@ blogsRouter.put('/:id', async (request, response) => {
 		return response.status(401).json({ error: 'token invalid' })
 	}
 
-	// have to disable this for the like function
-	// but i guess it is right to do this if we're trying to update a blog not just liking it
-	// const user = request.user
-
-	// if (findBlog.user.toString() !== user.id) {
-	// 	return response.status(400).end()
-	// }
-
 	const blog = {
 		title: body.title,
 		author: body.author,
@@ -90,6 +82,29 @@ blogsRouter.put('/:id', async (request, response) => {
 
 	const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user', { username: 1, name: 1 })
 	response.status(200).json(updatedBlog)
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+	const body = request.body
+
+	const findBlog = await Blog.findById(request.params.id)
+	if (!findBlog) {
+		return response.status(404).end()
+	}
+
+	const decodedToken = jwt.verify(request.token, process.env.SECRET)
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: 'token invalid' })
+	}
+
+	const comment =  body.comment
+
+	const blog = await Blog.findById(request.params.id)
+
+	blog.comments.push(comment)
+	blog.save()
+
+	return response.status(200).json(blog)
 })
 
 module.exports = blogsRouter

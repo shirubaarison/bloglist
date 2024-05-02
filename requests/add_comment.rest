@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/blogs/66326c4a5b6816ac9788b552/comments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRoaWFnbyIsImlkIjoiNjViNmQ2ZTIwOWEwNjJhMGYwZGI2MzYxIiwiaWF0IjoxNzE0NjgzNTQ4LCJleHAiOjE3MTQ2ODcxNDh9.yIo5WYot2BNrpoo74HuF1-G1ft-07oCXsM7Slyjn3bI
+
+{
+    "comment": "kurtt cobain was truly a genius!!"
+}
